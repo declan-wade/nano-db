@@ -49,6 +49,9 @@ The container listens on `0.0.0.0:7070`; the example publishes it only on the
 host's loopback interface. The named volume keeps the database across
 container restarts. Other `NANO_DB_*` settings can also be added to `.env` and
 are passed through by Docker. The access token is not included in the image.
+Publishing a GitHub Release builds and pushes `linux/amd64` and `linux/arm64`
+images to `ghcr.io/declan-wade/nano-db`, tagged with the release tag and
+`latest`.
 
 For explicitly unauthenticated local development only:
 
