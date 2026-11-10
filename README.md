@@ -9,15 +9,28 @@ production-readiness or performance certification.
 Install Rust 1.89 or newer with Cargo, rustfmt, and Clippy. Run from this folder:
 
 ```sh
-export NANO_DB_AUTH_TOKEN="$(openssl rand -hex 32)"
+umask 077
+printf 'NANO_DB_AUTH_TOKEN=%s\n' "$(openssl rand -hex 32)" > .env
+chmod 600 .env
+```
+
+Create `.env` once, then load it whenever you start the service:
+
+```sh
+set -a
+. ./.env
+set +a
 cargo run --release
 ```
 
-Keep the token private. The service listens at `127.0.0.1:7070` and opens
-`./nano-db.redb`. Its parent directory must already exist. Only one service
-process may open a database file for writing; startup fails if the file is
-locked, invalid, or inaccessible. On Unix, newly created database files have
-mode `0600`; existing file permissions are not changed.
+The `.env` file is ignored by Git. Keep it private and do not commit or share
+it. The service reads environment variables from its process; source `.env` as
+shown above whenever starting the service in a new shell. The service listens
+at `127.0.0.1:7070` and opens `./nano-db.redb`. Its parent directory must
+already exist. Only one service process may open a database file for writing;
+startup fails if the file is locked, invalid, or inaccessible. On Unix, newly
+created database files have mode `0600`; existing file permissions are not
+changed.
 
 For explicitly unauthenticated local development only:
 
