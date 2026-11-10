@@ -1,0 +1,8 @@
+.env
+.env.*
+.git
+.gitignore
+target
+*.redb
+tests
+README.md

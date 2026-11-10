@@ -24,13 +24,31 @@ cargo run --release
 ```
 
 The `.env` file is ignored by Git. Keep it private and do not commit or share
-it. The service reads environment variables from its process; source `.env` as
-shown above whenever starting the service in a new shell. The service listens
-at `127.0.0.1:7070` and opens `./nano-db.redb`. Its parent directory must
-already exist. Only one service process may open a database file for writing;
-startup fails if the file is locked, invalid, or inaccessible. On Unix, newly
-created database files have mode `0600`; existing file permissions are not
-changed.
+it. For native runs, the service reads environment variables from its process;
+source `.env` as shown above whenever starting it in a new shell. The service
+listens at `127.0.0.1:7070` and opens `./nano-db.redb`. Its parent directory
+must already exist. Only one service process may open a database file for
+writing; startup fails if the file is locked, invalid, or inaccessible. On
+Unix, newly created database files have mode `0600`; existing file permissions
+are not changed.
+
+### Run with Docker
+
+Build and run the image with the token supplied at runtime from `.env`:
+
+```sh
+docker build -t nano-db .
+docker run --rm \
+  --env-file .env \
+  -p 127.0.0.1:7070:7070 \
+  -v nano-db-data:/data \
+  nano-db
+```
+
+The container listens on `0.0.0.0:7070`; the example publishes it only on the
+host's loopback interface. The named volume keeps the database across
+container restarts. Other `NANO_DB_*` settings can also be added to `.env` and
+are passed through by Docker. The access token is not included in the image.
 
 For explicitly unauthenticated local development only:
 
